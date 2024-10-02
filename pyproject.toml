@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "telemetrymanagement"
+version = "0.1.0"
+description = ""
+authors = ["EvgrafovAlexander"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+sqlalchemy = "^2.0.35"
+pydantic-settings = "^2.5.2"
+loguru = "^0.7.2"
+uvicorn = "^0.31.0"
+asyncpg = "^0.29.0"
+greenlet = "^3.1.1"
+alembic = "^1.13.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
