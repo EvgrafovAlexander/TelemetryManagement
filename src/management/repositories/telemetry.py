@@ -2,7 +2,7 @@
 import uuid
 
 # thirdparty
-from sqlalchemy import select, update
+from sqlalchemy import select, desc
 
 # project
 from src.management.models import Telemetry
@@ -12,6 +12,17 @@ from src.utils.repository import BaseRepository
 
 class TelemetryRepository(BaseRepository):
     model = Telemetry
+
+    async def get_last_telemetry_row(self, device_id: uuid.UUID) -> Telemetry | None:
+        query: str = (
+            select(self.model)
+            .filter(self.model.device_id == str(device_id))
+            .order_by(desc(Telemetry.timestamp))
+            .limit(1)
+        )
+        telemetry_raw = await self.session.execute(query)
+        telemetry_row = telemetry_raw.scalar_one_or_none()
+        return telemetry_row
 
     async def save_telemetry_row(self, telemetry_row: TelemetryRow):
         telemetry_model = self.model(
