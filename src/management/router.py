@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 # project
 from src.database import get_db_session
 from src.management.controllers.save_telemetry import SaveTelemetryController
-from src.management.schemas import TelemetryRow
+from src.management.schemas import TelemetryRow, Result
 
 router = APIRouter(tags=["telemetry"])
 
@@ -34,7 +34,7 @@ async def get_history_telemetry_value(
     return None  # await GetDeviceInfoController(device_id, session)()
 
 
-@router.post("/telemetry")
+@router.post("/telemetry", response_model=Result)
 async def save_telemetry(
     telemetry_row: TelemetryRow,
     session: AsyncSession = Depends(get_db_session),
