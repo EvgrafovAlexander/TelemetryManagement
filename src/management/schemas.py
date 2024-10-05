@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 
-class Telemetry(BaseModel):
+class TelemetryRow(BaseModel):
     """Запись со значением телеметрии датчика"""
 
     id: UUID = Field(default_factory=UUID, title="Row id")
