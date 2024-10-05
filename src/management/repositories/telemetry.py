@@ -1,8 +1,9 @@
 # stdlib
 import uuid
+from datetime import datetime
 
 # thirdparty
-from sqlalchemy import select, desc
+from sqlalchemy import between, select, desc
 
 # project
 from src.management.models import Telemetry
@@ -23,6 +24,18 @@ class TelemetryRepository(BaseRepository):
         telemetry_raw = await self.session.execute(query)
         telemetry_row = telemetry_raw.scalar_one_or_none()
         return telemetry_row
+
+    async def get_history_telemetry_rows(self, device_id: uuid.UUID, dt_from: datetime, dt_to: datetime) -> list[Telemetry]:
+        query: str = (
+            select(self.model)
+            .where(
+                self.model.device_id == str(device_id),
+                between(Telemetry.timestamp, dt_from, dt_to)
+            )
+        )
+        telemetry_raw = await self.session.execute(query)
+        telemetry_rows = telemetry_raw.scalars().all()
+        return telemetry_rows
 
     async def save_telemetry_row(self, telemetry_row: TelemetryRow):
         telemetry_model = self.model(

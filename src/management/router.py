@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # project
 from src.database import get_db_session
+from src.management.controllers.get_history_telemetry_values import GetHistoryTelemetryController
 from src.management.controllers.get_last_telemetry_value import GetLastTelemetryController
 from src.management.controllers.save_telemetry import SaveTelemetryController
 from src.management.schemas import TelemetryRow, Result
@@ -24,15 +25,15 @@ async def get_last_telemetry_value(
     return await GetLastTelemetryController(device_id, session)()
 
 
-@router.get("/devices/{device_id}/telemetry")
+@router.get("/devices/{device_id}/telemetry", response_model=list[TelemetryRow])
 async def get_history_telemetry_values(
     device_id: uuid.UUID,
     dt_from: datetime,
     dt_to: datetime,
     session: AsyncSession = Depends(get_db_session),
 ):
-    """Получает исторические данные телеметрии устройства по его ID"""
-    return None  # await GetDeviceInfoController(device_id, session)()
+    """Получает исторические данные телеметрии устройства по его ID и временному интервалу"""
+    return await GetHistoryTelemetryController(device_id, dt_from, dt_to, session)()
 
 
 @router.post("/telemetry", response_model=Result)
